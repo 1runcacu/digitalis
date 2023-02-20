@@ -9,6 +9,8 @@
  *   }
  * ]
  */
+const { v4: uuidv4 } = require('uuid');
+
 const resHandle = (option={})=>{
     const copy = {...option};
     Object.assign(copy,{
@@ -23,7 +25,7 @@ const resHandle = (option={})=>{
 }
 
 module.exports = {
-    id:()=>Math.random(Date.now()).toString(36).substr(2)+Math.random().toString(36).substr(2),
+    id:()=>uuidv4(),
     install:(handle,io,socket)=>{
         // console.log(io);
         handle.map(item=>item(io,socket))
@@ -36,5 +38,12 @@ module.exports = {
                 });
             })
         });
+    },
+    wait:async (time=3000)=>{
+        await new Promise(resolve=>{
+            setTimeout(() => {
+                resolve();
+            }, time);
+        })
     }
 }

@@ -14,12 +14,7 @@ module.exports = (io,socket)=>{
         priority:-1,
         install:()=>{
             io.use((socket, next) => {
-                // const device_id = socket.handshake.auth.device_id;
-                // service_center_update({device_id});
                 next();
-                setTimeout(() => {
-                    socket.emit("server",1,2,3);
-                }, 1000);
             });
         }
     }

@@ -10,14 +10,12 @@
  * ]
  */
 
-
-
 module.exports = (io,socket)=>{
     return {
         priority:-1,
         install:()=>{
             io&&io.use((socket, next) => {
-                console.log(socket.request.headers);
+                // console.log(socket.request.headers);
                 // next(new Error('fail'));
                 console.log("服务器认证成功");
                 next();

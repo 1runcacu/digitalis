@@ -1,5 +1,6 @@
 // const {loader} = require("../utils");
 // module.exports = loader(__filename);
+console.clear();
 module.exports = {
     error:require("./error")
 };
