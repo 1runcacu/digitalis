@@ -9,6 +9,8 @@
  *   }
  * ]
  */
+const {WebApi} = require("../../../api");
+
 module.exports = (io,socket)=>{
     return {
         router:[
@@ -22,7 +24,7 @@ module.exports = (io,socket)=>{
             {
                 path:"disconnect",
                 handle:(...args)=>{
-                    console.log('disconnect',args);
+                    WebApi.serviceSearch();
                 }
             },
             {

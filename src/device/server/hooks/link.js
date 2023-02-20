@@ -9,19 +9,23 @@
  *   }
  * ]
  */
+const {WebApi} = require("../../../api");
+
 module.exports = (io,socket)=>{
     return {
         router:[
             {
                 path:"connect",
                 handle:(res,req)=>{
-                    console.log('连接成功');
+                    // console.log('连接成功');
+                    WebApi.serviceSearch();
                 }
             },
             {
                 path:"reconnect",
                 handle:(res,req)=>{
-                    console.log('重新连接');
+                    // console.log('重新连接');
+                    WebApi.serviceSearch();
                 }
             }
         ]

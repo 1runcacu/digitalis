@@ -9,27 +9,42 @@
  *   }
  * ]
  */
-
+const map = require("../../db/mapDB");
+const {WebApiType,WebApi} = require("../../../api");
 
 module.exports = (io,socket)=>{
     return {
         install:()=>{
-            socket.onAny((eventName, ...args) => {
-                console.log('onAny',eventName);
+            socket.onAny((eventName, pack) => {
+                // console.log('onAny',eventName);
             });
-            socket.onAnyOutgoing((eventName, ...args) => {
-                console.log(`onAnyOutgoing ${eventName}`);
-              });
-            socket.prependAny((eventName, ...args) => {
-                console.log('prependAny',eventName);
+            socket.onAnyOutgoing((eventName, pack) => {
+                const {sid,origin} = pack;
+                map.set(sid,pack);
+                // console.log('s send',eventName,origin,sid);
             });
-            socket.prependAnyOutgoing((eventName, ...args) => {
-                console.log(`prependAnyOutgoing ${eventName}`);
+            socket.prependAny((eventName, pack) => {
+                const {sid,event,origin} = pack;
+                if(event&&origin&&sid&&!map.has(sid)){
+                    switch(event){
+                        case WebApiType.SYNC:
+                            WebApi.systemSync(pack);
+                            WebApi.systemAck();
+                            break;
+                        case WebApiType.ACK:
+                            WebApi.systemAck(pack);
+                            console.log('s recive',eventName,origin);
+                            break;
+                    }
+                    map.set(sid,pack);
+                    // console.log('s recive',eventName,origin);
+                }else{
+                    // console.log("数据包无效");
+                }
             });
-            // socket[Symbol.for('nodejs.rejection')] = (err) => {
-            //     // socket.emit("error", err);
-            //     // console.log(err);
-            // };
+            socket.prependAnyOutgoing((eventName, pack) => {
+                
+            });
         }
     }
 }

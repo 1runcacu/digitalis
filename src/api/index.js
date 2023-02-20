@@ -28,15 +28,13 @@ function init(){
         confirm_time:Date.now(),
         status:true
     };
-    routers[device_id] = {
-        "online":[]
-    };
+    routers[device_id] = {};
 }
 init();
 
 const WebApiType = {
     SYNC:"sync",
-    SEARCH:"search",
+    ACK:"ack",
     P2P:"p2p",
     ONCALL:"oncall",
 }
@@ -51,22 +49,34 @@ function packMaker(pack = {},event=null){
     return Object.assign(defPack,pack);
 }
 
-async function systemSync(pack={}){
+async function systemSync(pack={
+    service:routers[device_id]
+}){
     const req = packMaker(pack,WebApiType.SYNC);
     emitter.emit(WebApiType.SYNC,req);
     return req.sid;
 }
 
+async function systemAck(pack={
+    service:routers[device_id]
+}){
+    const req = packMaker(pack,WebApiType.ACK);
+    emitter.emit(WebApiType.ACK,req);
+    return req.sid;
+}
+
 async function serviceSearch(){
     const sid = await systemSync();
+    await systemAck();
     await wait();
-    console.log(sid);
+    // console.log(sid);
 }
 
 module.exports = {
     WebApi:{
         systemSync,
-        serviceSearch
+        systemAck,
+        serviceSearch,
     },
     WebApiType
 }

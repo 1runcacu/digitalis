@@ -18,9 +18,11 @@ const {WebApiType} = require("../../../api");
 module.exports = (io,socket)=>{
     return {
         install:()=>{
-            emitter.on(WebApiType.SYNC,(...args)=>{
-                console.log("s",args);
-                socket.emit(WebApiType.SYNC,args);
+            emitter.on(WebApiType.SYNC,pack=>{
+                io.emit(WebApiType.SYNC,pack);
+            })
+            emitter.on(WebApiType.ACK,pack=>{
+                io.emit(WebApiType.ACK,pack);
             })
         }
     }
