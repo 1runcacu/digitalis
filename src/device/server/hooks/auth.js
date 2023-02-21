@@ -10,15 +10,20 @@
  * ]
  */
 
+const {WebApi} = require("../../../api");
+const { wait } = require("../../../utils/tools");
+
 module.exports = (io,socket)=>{
     return {
         priority:-1,
         install:()=>{
-            io&&io.use((socket, next) => {
+            io&&io.use(async (socket, next) => {
                 // console.log(socket.request.headers);
                 // next(new Error('fail'));
                 console.log("服务器认证成功");
                 next();
+                await wait(100);
+                WebApi.serviceSearch();
             });
         }
     }

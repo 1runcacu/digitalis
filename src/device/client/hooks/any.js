@@ -11,10 +11,15 @@
  */
 const map = require("../../db/mapDB");
 const {WebApiType,WebApi} = require("../../../api");
+const emitter = require("../../emitter");
+const { validate } = require('uuid');
 
 module.exports = (io,socket)=>{
     return {
         install:()=>{
+            emitter.on(WebApiType.BROADCAST,(eventName,pack)=>{
+                socket.emit(eventName,pack);
+            })
             socket.onAny((eventName, pack) => {
                 // console.log('onAny',eventName);
             });
@@ -24,22 +29,18 @@ module.exports = (io,socket)=>{
                 // console.log('c send',eventName,origin,sid);
             });
             socket.prependAny((eventName, pack) => {
-                const {sid,event,origin} = pack;
-                if(event&&origin&&sid&&!map.has(sid)){
+                const {sid,rid,event,origin} = pack;
+                if(!map.has(sid)){
+                    emitter.emit(WebApiType.BROADCAST,eventName,pack);
                     switch(event){
                         case WebApiType.SYNC:
-                            WebApi.systemSync(pack);
-                            WebApi.systemAck();
+                            WebApi.systemAck(pack);
+                            WebApi.serviceSearch();
                             break;
                         case WebApiType.ACK:
-                            WebApi.systemAck(pack);
-                            console.log('c recive',eventName,origin);
+                            rid&&emitter.emit(rid,pack);
                             break;
                     }
-                    map.set(sid,pack);
-                    // console.log('c recive',eventName,origin);
-                }else{
-                    // console.log("数据包无效");
                 }
             });
             socket.prependAnyOutgoing((eventName, pack) => {

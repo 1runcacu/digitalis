@@ -17,19 +17,23 @@ module.exports = (io,socket)=>{
             {
                 path:"connect_error",
                 handle:(...args)=>{
-                    // console.log("error");
+                    console.log("error");
+                    // WebApi.serviceSearch();
                     // console.log('连接失败',args);
                 }
             },
             {
                 path:"disconnect",
                 handle:(...args)=>{
-                    WebApi.serviceSearch();
+                    // console.log("233");
+                    // WebApi.serviceSearch();
                 }
             },
             {
                 path:"disconnecting",
                 handle:(...args)=>{
+                    // console.log("234");
+                    // WebApi.serviceSearch();
                     // console.log('disconnecting',args);
                 }
             }
