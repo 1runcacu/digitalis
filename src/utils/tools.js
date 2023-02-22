@@ -39,6 +39,18 @@ module.exports = {
             })
         });
     },
+    // register:(handle,io)=>{
+    //     handle.map(item=>item(io))
+    //     .sort(({priority:u=0},{priority:v=0})=>u-v)
+    //     .forEach(({install,router})=>{
+    //         install&&install();
+    //         socket&&router&&router.forEach(({path,protocol,handle})=>{
+    //             path&&socket.on(path,(...args)=>{
+    //                 handle&&handle(resHandle({url:path,protocol,headers:{}}),{body:args});
+    //             });
+    //         })
+    //     });
+    // },
     wait:async (time=3000)=>{
         await new Promise(resolve=>{
             setTimeout(() => {

@@ -3,6 +3,7 @@ const {tools:{id,wait}} = require("../utils");
 const {device_id,port} = require("../config");
 const { validate } = require('uuid');
 const {createTask} = require("../device/task/schedule");
+const map = require("../device/db/mapDB");
 
 const WebApiType = {
     SYNC:"sync",
@@ -49,7 +50,8 @@ function packMaker(pack = {},event=null){
 
 async function systemSync(pack={}){
     const req = packMaker(pack,WebApiType.SYNC);
-    emitter.emit(WebApiType.SYNC,req);
+    // emitter.emit(WebApiType.SYNC,req);
+    systemBroadcast(WebApiType.SYNC,req);
     return req.sid;
 }
 
@@ -72,11 +74,14 @@ async function systemAck(pack){
         node:nodes[device_id],
         rid:sid
     },WebApiType.ACK);
-    emitter.emit(WebApiType.ACK,req);
+    // emitter.emit(WebApiType.ACK,req);
+    systemBroadcast(WebApiType.ACK,req);
     return req.sid;
 }
 
 async function systemBroadcast(eventName,pack){
+    const {sid,origin} = pack;
+    map.set(sid,pack);
     emitter.emit(WebApiType.BROADCAST,eventName,pack);
 }
 

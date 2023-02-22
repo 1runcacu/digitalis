@@ -1,6 +1,6 @@
 const db = {};
 
-const CYCLE_TIME = 60000;
+const CYCLE_TIME = 1000;
 
 module.exports = {
     set:(key,val,timeout=CYCLE_TIME)=>{
@@ -12,3 +12,7 @@ module.exports = {
     get:(key)=>db[key],
     has:(key)=>db[key]!=undefined
 }
+
+// setInterval(()=>{
+//     console.log(Object.keys(db).length);
+// },1000);

@@ -25,29 +25,15 @@ module.exports = (io,socket)=>{
                 // console.log('onAny',eventName);
             });
             socket.onAnyOutgoing((eventName, pack) => {
-                const {sid,origin} = pack;
-                map.set(sid,pack);
+                // const {sid,origin} = pack;
+                // map.set(sid,pack);
                 // console.log('c send',eventName,origin,sid);
             });
             socket.prependAny((eventName, pack) => {
                 const {sid,rid,event,origin,field,targets} = pack;
                 if(!map.has(sid)){
                     WebApi.systemBroadcast(eventName,pack);
-                    switch(event){
-                        case WebApiType.SYNC:
-                            WebApi.systemAck(pack);
-                            if(field===FIELD.ALL)
-                               { WebApi.serviceSearch();console.log(field);}
-                            break;
-                        case WebApiType.ACK:
-                            rid&&emitter.emit(rid,pack);
-                            break;
-                        case WebApiType.P2P:
-                            if(targets&&targets.includes(device_id)){
-                                console.log(`收到${origin}的消息`);
-                            }
-                            break;
-                    }
+                    emitter.emit(eventName,pack);
                 }
             });
             socket.prependAnyOutgoing((eventName, pack) => {
