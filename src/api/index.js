@@ -57,14 +57,15 @@ async function systemSync(pack={}){
 
 async function systemP2P(pack={targets:[]}){
     const req = packMaker(pack,WebApiType.P2P);
-    // emitter.emit(WebApiType.P2P,req);
     await systemBroadcast(WebApiType.P2P,req);
     return req.sid;
 }
 
 async function systemOnCall(pack={targets:[]}){
-    const req = packMaker(pack,WebApiType.P2P);
-    emitter.emit(WebApiType.P2P,req);
+    const req = packMaker(pack,WebApiType.ONCALL);
+    await systemBroadcast(WebApiType.ONCALL,req);
+    const res = await waitFirstAckRecive(req.sid);
+    console.log(res);
     return req.sid;
 }
 
@@ -72,9 +73,10 @@ async function systemAck(pack){
     const {sid} = pack;
     const req = packMaker({
         node:nodes[device_id],
-        rid:sid
+        rid:sid,
+        origin:device_id,
+        timestamp:Date.now(),
     },WebApiType.ACK);
-    // emitter.emit(WebApiType.ACK,req);
     systemBroadcast(WebApiType.ACK,req);
     return req.sid;
 }
@@ -87,12 +89,14 @@ async function systemBroadcast(eventName,pack){
 
 async function unionAck(pack){
     const {sid} = pack;
+    console.log(sid);
     let req = {...pack};
-    delete req[sid];
+    delete req.sid;
     req.rid = sid;
-    req = packMaker(req,WebApiType.ACK);
-    emitter.emit(WebApiType.ACK,req);
-    return req.sid;
+    const pk = packMaker(req,WebApiType.ACK);
+    console.log(pk);
+    systemBroadcast(WebApiType.ACK,pk);
+    return pk.sid;
 }
 
 let lock = false;
@@ -100,8 +104,8 @@ async function serviceSearch(field){
     if(lock)return;
     lock = true;
     console.clear();
-    console.log("发送信号搜索");
-    console.log(port,new Date());
+    console.log("服务搜索");
+    console.log(port,new Date(),device_id);
     // buffer[STATE.RESET];
     const sid = await systemSync({field});
     const pack = await waitAckRecive(sid);
@@ -127,30 +131,29 @@ createTask(()=>serviceSearch(FIELD.SELF),"30");
 
 port=="10000"&&createTask(()=>{
     const targets = Object.keys(nodes);
-    console.log(device_id,'发送消息');
-    systemP2P({targets});
+    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+    systemOnCall({targets:[targets[targets.length-1]]});
 },"5");
 
 port=="10001"&&createTask(()=>{
     const targets = Object.keys(nodes);
-    console.log(device_id,'发送消息');
-    systemP2P({targets});
+    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+    systemOnCall({targets:[targets[targets.length-1]]});
 },"10");
 
 port=="10002"&&createTask(()=>{
     const targets = Object.keys(nodes);
-    console.log(device_id,'发送消息');
-    systemP2P({targets});
+    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+    systemOnCall({targets:[targets[targets.length-1]]});
 },"15");
 
 port=="10003"&&createTask(()=>{
     const targets = Object.keys(nodes);
-    console.log(device_id,'发送消息');
-    systemP2P({targets});
+    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+    systemOnCall({targets:[targets[targets.length-1]]});
 },"45");
 
 async function waitAckRecive(sid){
-    console.log(device_id);
     return await new Promise(async resolve=>{
         const list = {};
         const handle = pack=>{
@@ -163,6 +166,25 @@ async function waitAckRecive(sid){
         emitter.removeListener(sid,handle);
         list[device_id] = nodes[device_id];
         resolve(list);
+    });
+}
+
+async function waitFirstAckRecive(sid,timeout=3000){
+    console.log(sid);
+    return await new Promise(async (resolve,reject)=>{
+        let flag = true;
+        const handle = pack=>{
+            flag = false;
+            resolve(pack);
+        }
+        emitter.once(sid,handle);
+        setTimeout(() => {
+            if(flag){
+                emitter.removeListener(sid,handle);
+                console.log("嘤嘤嘤");
+                reject({msg:"timeout",code:404});
+            }
+        }, timeout);
     });
 }
 
