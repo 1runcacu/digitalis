@@ -4,22 +4,13 @@
 
 const schedule = require('node-schedule');
 
-function scheduleCancel(){
-
-    // var counter = 1;
-    // const j = schedule.scheduleJob('* * * * * *', function(){
-        
-    //     console.log('定时器触发次数：' + counter);
-    //     counter++;
-        
-    // });
-
-    // setTimeout(function() {
-    //     console.log('定时器取消')
-    //   // 定时器取消
-    //     j.cancel();   
-    // }, 5000);
-    
+function createTask(task=()=>{},s="30",m="*",h="*",M="*",y="*",w="*"){
+    const scl = schedule.scheduleJob(`${s} ${m} ${h} ${M} ${y} ${w}`, task);
+    return {
+        close:()=>scl.cancel()
+    }
 }
 
-scheduleCancel();
+module.exports = {
+    createTask
+}

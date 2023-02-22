@@ -20,10 +20,13 @@ module.exports = (io,socket)=>{
         install:()=>{
             emitter.on(WebApiType.SYNC,pack=>{
                 io.emit(WebApiType.SYNC,pack);
-            })
+            });
             emitter.on(WebApiType.ACK,pack=>{
                 io.emit(WebApiType.ACK,pack);
-            })
+            });
+            // emitter.on(WebApiType.P2P,pack=>{
+            //     io.emit(WebApiType.P2P,pack);
+            // });
         }
     }
 }
