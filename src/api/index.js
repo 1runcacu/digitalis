@@ -65,7 +65,7 @@ async function systemOnCall(pack={targets:[]}){
     const req = packMaker(pack,WebApiType.ONCALL);
     await systemBroadcast(WebApiType.ONCALL,req);
     const res = await waitFirstAckRecive(req.sid);
-    console.log(res);
+    // console.log(res);
     return req.sid;
 }
 
@@ -89,18 +89,17 @@ async function systemBroadcast(eventName,pack){
 
 async function unionAck(pack){
     const {sid} = pack;
-    console.log(sid);
+    // console.log(sid);
     let req = {...pack};
     delete req.sid;
     req.rid = sid;
     const pk = packMaker(req,WebApiType.ACK);
-    console.log(pk);
     systemBroadcast(WebApiType.ACK,pk);
     return pk.sid;
 }
 
 let lock = false;
-async function serviceSearch(field){
+async function serviceSearch(field=FIELD.SELF){
     if(lock)return;
     lock = true;
     console.clear();
@@ -129,29 +128,35 @@ async function confirmServiceSearch(field){
 
 createTask(()=>serviceSearch(FIELD.SELF),"30");
 
-port=="10000"&&createTask(()=>{
-    const targets = Object.keys(nodes);
-    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
-    systemOnCall({targets:[targets[targets.length-1]]});
-},"5");
+// port=="10000"&&createTask(()=>{
+//     const targets = Object.keys(nodes);
+//     console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+//     systemOnCall({targets:[targets[targets.length-1]]});
+// },"5");
 
-port=="10001"&&createTask(()=>{
-    const targets = Object.keys(nodes);
-    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
-    systemOnCall({targets:[targets[targets.length-1]]});
-},"10");
+// port=="10001"&&createTask(()=>{
+//     const targets = Object.keys(nodes);
+//     console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+//     systemOnCall({targets:[targets[targets.length-1]]});
+// },"10");
 
-port=="10002"&&createTask(()=>{
-    const targets = Object.keys(nodes);
-    console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
-    systemOnCall({targets:[targets[targets.length-1]]});
-},"15");
+// port=="10002"&&createTask(()=>{
+//     const targets = Object.keys(nodes);
+//     console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+//     systemOnCall({targets:[targets[targets.length-1]]});
+// },"15");
 
-port=="10003"&&createTask(()=>{
+// port=="10003"&&createTask(()=>{
+    // const targets = Object.keys(nodes);
+    // console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
+    // systemOnCall({targets:[targets[targets.length-1]]});
+// },"45");
+
+port=="10006"&&setInterval(()=>{
     const targets = Object.keys(nodes);
     console.log('\x1b[31m',device_id,'发送消息',"\x1b[0m");
     systemOnCall({targets:[targets[targets.length-1]]});
-},"45");
+},2000);
 
 async function waitAckRecive(sid){
     return await new Promise(async resolve=>{
@@ -170,7 +175,7 @@ async function waitAckRecive(sid){
 }
 
 async function waitFirstAckRecive(sid,timeout=3000){
-    console.log(sid);
+    // console.log(sid);
     return await new Promise(async (resolve,reject)=>{
         let flag = true;
         const handle = pack=>{

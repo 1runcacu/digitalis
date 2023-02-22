@@ -1,5 +1,4 @@
 const db = {};
-
 const CYCLE_TIME = 1000;
 
 module.exports = {

@@ -10,7 +10,7 @@
  * ]
  */
 
-const {WebApi} = require("../../../api");
+const {WebApi,FIELD} = require("../../../api");
 const { wait } = require("../../../utils/tools");
 
 module.exports = (io,socket)=>{
@@ -23,7 +23,7 @@ module.exports = (io,socket)=>{
                 console.log("服务器认证成功");
                 next();
                 await wait(100);
-                WebApi.serviceSearch();
+                WebApi.serviceSearch(FIELD.ALL);
             });
         }
     }
