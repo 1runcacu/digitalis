@@ -22,8 +22,8 @@ module.exports = (io,socket)=>{
                 // next(new Error('fail'));
                 console.log("服务器认证成功");
                 next();
-                await wait(100);
-                WebApi.serviceSearch(FIELD.ALL);
+                // await wait(100);
+                // WebApi.serviceSearch(FIELD.ALL);
             });
         }
     }

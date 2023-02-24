@@ -126,7 +126,7 @@ async function confirmServiceSearch(field){
     return serviceSearch(field);
 }
 
-createTask(()=>serviceSearch(FIELD.SELF),"30");
+// createTask(()=>serviceSearch(FIELD.SELF),"30");
 
 // port=="10000"&&createTask(()=>{
 //     const targets = Object.keys(nodes);

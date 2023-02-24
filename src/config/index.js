@@ -5,7 +5,11 @@ const {parse} = require('../utils');
 const inConfig = parse(process.argv.slice(2));
 
 
-module.exports = Object.assign(inConfig.mode==="development"?dev:prod,(()=>{
+module.exports = Object.assign(inConfig.mode==="development"?dev:prod,{
+    field:"com",
+    device_id:id(),
+    time_stamp:Date.now(),
+},(()=>{
     const config = {
         ...inConfig,
     }
@@ -16,10 +20,6 @@ module.exports = Object.assign(inConfig.mode==="development"?dev:prod,(()=>{
         delete config[key];
     }
     return config;
-})(),{
-    field:"com",
-    device_id:id(),
-    time_stamp:Date.now(),
-});
+})());
 
 console.log(module.exports);
