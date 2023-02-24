@@ -17,15 +17,15 @@ module.exports = (io,socket)=>{
             {
                 path:"connect",
                 handle:(res,req)=>{
-                    console.log('连接成功');
-                    WebApi.serviceSearch();
+                    // console.log('连接成功');
+                    // WebApi.serviceSearch();
                 }
             },
             {
                 path:"reconnect",
                 handle:(res,req)=>{
-                    console.log('重新连接');
-                    WebApi.serviceSearch();
+                    // console.log('重新连接');
+                    // WebApi.serviceSearch();
                 }
             }
         ]

@@ -39,6 +39,22 @@ module.exports = (io,socket)=>{
             socket.prependAnyOutgoing((eventName, pack) => {
                 
             });
-        }
+        },
+        router:[
+            {
+                path:"connect",
+                handle:(res,req)=>{
+                    // console.log('连接成功');
+                    WebApi.serviceSearch();
+                }
+            },
+            {
+                path:"reconnect",
+                handle:(res,req)=>{
+                    // console.log('重新连接');
+                    WebApi.serviceSearch();
+                }
+            }
+        ]
     }
 }
