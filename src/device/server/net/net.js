@@ -10,23 +10,35 @@
  * ]
  */
 
+const map = require("../../db/mapDB");
+const {WebApiType,WebApi,FIELD} = require("../../../api");
 const emitter = require("../../emitter");
 const {device_id} = require("../../../config");
-const {tools:{id}} = require("../../../utils");
-const {WebApiType} = require("../../../api");
 
 module.exports = (io,socket)=>{
     return {
         install:()=>{
-            // emitter.on(WebApiType.SYNC,pack=>{
-            //     io.emit(WebApiType.SYNC,pack);
-            // });
-            // emitter.on(WebApiType.ACK,pack=>{
-            //     io.emit(WebApiType.ACK,pack);
-            // });
-            // emitter.on(WebApiType.P2P,pack=>{
-            //     io.emit(WebApiType.P2P,pack);
-            // });
+            emitter.on(WebApiType.BROADCAST,(eventName,pack)=>{
+                io.emit(eventName,pack);
+            })
+            socket.onAny((eventName, pack) => {
+                // console.log('onAny',eventName);
+            });
+            socket.onAnyOutgoing((eventName, pack) => {
+                // const {sid,origin} = pack;
+                // map.set(sid,pack);
+                // console.log('s send',eventName,origin,sid);
+            });
+            socket.prependAny((eventName, pack) => {
+                const {sid,rid,event,origin,field,targets} = pack;
+                if(!map.has(sid)){
+                    WebApi.systemBroadcast(eventName,pack);
+                    emitter.emit(eventName,pack);
+                }
+            });
+            socket.prependAnyOutgoing((eventName, pack) => {
+                
+            });
         }
     }
 }
