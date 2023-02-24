@@ -3,7 +3,7 @@ module.exports = {
     files:[
         path.join(__dirname,'./dist/index.js')
     ],
-    output:path.join(__dirname,'../'),
+    output:path.join(__dirname,'./build/'),
     option:{
         compact: true,
         controlFlowFlattening: true,
